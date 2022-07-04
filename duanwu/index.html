@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>端午</title>
+        <style>
+            .container {
+                position: relative;
+                height: 100%;
+                top: 0;
+                left: 0;
+                overflow: hidden;
+                /* margin: 50px; */
+                /* border: 5px solid red; */
+            }
+            .background {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+            }
+            .corner {
+                position: absolute;
+                width: 90%;
+                top: -15%;
+                right: 0%;
+                animation: updown 2s;
+            }
+            .bamboo {
+                position: absolute;
+                width: 55%;
+                top: -15%;
+                right: -8%;
+                animation: updown 2s;
+            }
+            .duanwujie {
+                position: absolute;
+                /* width: 80%;
+                top: 30%;
+                left: 50%;
+                transform: translate(-50%, -50%); */
+                height: 45%;
+                width: 80%;
+                top: 5%;
+                left: 10%;
+                animation: scaleup 2s;
+            }
+            .moutain {
+                position: absolute;
+                height: 55%;
+                width: 160%;
+                bottom: -5%;
+                left: -30%;
+                animation: downup 2s ease;
+            }
+            .zongzi {
+                position: absolute;
+                height: 25%;
+                width: 100%;
+                bottom: 15%;
+                left: 0%;
+                animation: updownslowshow 2s ease-in-out;
+            }
+            .wine {
+                position: absolute;
+                height: 28%;
+                width: 36%;
+                bottom: -10%;
+                left: 32%;
+                animation: updownslowshow 2s ease-in-out;
+            }
+            .cloud {
+                position: absolute;
+                height: 50%;
+                width: 150%;
+                bottom: -10%;
+                left: -25%;
+                animation: slowshow 3s;
+            }
+            @keyframes updown {
+                from { transform: translateY(-100%); }
+                to { transform: translateY(0%); }
+            }
+            @keyframes downup {
+                from { transform: translateY(100%) }
+                to { transform: translateY(0%); }
+            }
+            @keyframes slowshow {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes updownslowshow {
+                from { opacity: 0; transform: translateY(100%); }
+                to { opacity: 1; transform: translateY(0%); }
+            }
+            @keyframes scaleup {
+                from { transform: scale(0, 0); }
+                to { transform: scale(1, 1); }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img class="background" src="images/background.jpg"/>
+            <img class="corner" src="images/corner.png"/>
+            <img class="bamboo" src="images/bamboo.png"/>
+            <img class="duanwujie" src="images/duanwujie.png"/>
+            <img class="moutain" src="images/moutain.png"/>
+            <img class="zongzi" src="images/zongzi.png"/>
+            <img class="wine" src="images/wine.png"/>
+            <img class="cloud" src="images/cloud.png"/>
+        </div>
+    </body>
+</html>
