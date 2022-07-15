@@ -130,17 +130,24 @@
                 swiperAnimate(swiper);
             },
             onSlideChangeEnd: function (swiper) {
-                swiperAnimate(swiper);
                 var eles = document.querySelectorAll(".restart");
+                var originAnimations = [];
                 for (i = 0; i < eles.length; i++) {
-                    var originAnimation = eles[i].style.animation;
+                    originAnimations.push(eles[i].style.animation);
+                }
+                for (i = 0; i < eles.length; i++) {
                     // remove animation
                     eles[i].style.animation = 'none';
+                }
+                for (i = 0; i < eles.length; i++) {
                     // trigger reflow
                     eles[i].offsetWidth;
-                    // add animation again
-                    eles[i].style.animation = originAnimation;
                 }
+                for (i = 0; i < eles.length; i++) {
+                    // add animation again
+                    eles[i].style.animation = originAnimations[i];
+                }
+                swiperAnimate(swiper);
             },
             onTransitionEnd: function (swiper) {
                 swiperAnimate(swiper);
