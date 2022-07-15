@@ -58,6 +58,19 @@
     animation: appear 3s;
 }
 
+.fontstyle {
+    position: absolute;
+    width: 80%;
+    top: 25%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    font-size: 3em;
+    font-family: "Lucida Calligraphy", cursive, serif, sans-serif;
+    white-space: nowrap;
+}
+
 @keyframes updown {
     from {
         transform: translateY(-100%);

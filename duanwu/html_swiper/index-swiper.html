@@ -19,6 +19,7 @@
             width: 100%;
             height: 100%;
             background-size: 100% 100%;
+            overflow: hidden;
         }
 
         .ani {
@@ -99,14 +100,23 @@
                     swiper-animate-duration="2s" swiper-animate-delay="0s" />
             </section>
             <section class="swiper-slide">
-                <img class="ani duanwujie" src="../images/libao.jpg" swiper-animate-effect="zoomInDown"
-                    swiper-animate-duration="1.5s" swiper-animate-delay="0s" />
+                <!-- <img class="ani duanwujie" src="../images/libao.jpg" swiper-animate-effect="zoomInDown"
+                    swiper-animate-duration="1.5s" swiper-animate-delay="0s" /> -->
+                <!-- <div class="fontstyle restart" style="animation: scaleup 1.5s;">--- 在这里祝大家端午安康！</div> -->
+                <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
+                    swiper-animate-delay="0s">--- 在这里祝大家端午安康！</div>
+            </section>
+            <section class="swiper-slide">
+                <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
+                    swiper-animate-delay="0s">下个假期可是中秋了噢，再会！</div>
             </section>
         </div>
-        <img class="moutain" src="../images/moutain.png" />
-        <img class="zongzi" src="../images/zongzi.png" />
-        <img class="wine" src="../images/wine.png" />
-        <img class="cloud" src="../images/cloud.png" />
+        <img class="corner restart" src="../images/corner.png" />
+        <img class="bamboo restart" src="../images/bamboo.png" />
+        <img class="moutain restart" src="../images/moutain.png" />
+        <img class="zongzi restart" src="../images/zongzi.png" />
+        <img class="wine restart" src="../images/wine.png" />
+        <img class="cloud restart" src="../images/cloud.png" />
         <img src="../images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
         <div class="swiper-pagination"></div>
     </div>
@@ -114,7 +124,6 @@
         var mySwiper = new Swiper('.swiper-container', {
             direction: 'vertical',
             pagination: '.swiper-pagination',
-            // virtualTranslate : true,
             mousewheelControl: true,
             onInit: function (swiper) {
                 swiperAnimateCache(swiper);
@@ -122,6 +131,16 @@
             },
             onSlideChangeEnd: function (swiper) {
                 swiperAnimate(swiper);
+                var eles = document.querySelectorAll(".restart");
+                for (i = 0; i < eles.length; i++) {
+                    var originAnimation = eles[i].style.animation;
+                    // remove animation
+                    eles[i].style.animation = 'none';
+                    // trigger reflow
+                    eles[i].offsetWidth;
+                    // add animation again
+                    eles[i].style.animation = originAnimation;
+                }
             },
             onTransitionEnd: function (swiper) {
                 swiperAnimate(swiper);
