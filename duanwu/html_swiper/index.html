@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/swiper.min.css">
     <link rel="stylesheet" href="../css/animate.min.css">
     <script src="../js/swiper.min.js"></script>
-    <script src="../js/swiper.animate.min.js"></script>
+    <script src="../js/swiper.animate1.0.3.min.js"></script>
     <style>
         body {
             background-image: url("../images/background.jpg");
@@ -123,34 +123,40 @@
     <script>
         var mySwiper = new Swiper('.swiper-container', {
             direction: 'vertical',
-            pagination: '.swiper-pagination',
             mousewheelControl: true,
-            onInit: function (swiper) {
-                swiperAnimateCache(swiper);
-                swiperAnimate(swiper);
+            // pagination: '.swiper-pagination',
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
             },
-            onSlideChangeEnd: function (swiper) {
-                var eles = document.querySelectorAll(".restart");
-                var originAnimations = [];
-                for (i = 0; i < eles.length; i++) {
-                    originAnimations.push(eles[i].style.animation);
+            on: {
+                init: function () {
+                    swiperAnimateCache(this);
+                    swiperAnimate(this);
+                },
+                slideChange: function () {
+                    var eles = document.querySelectorAll(".restart");
+                    var originAnimations = [];
+                    for (i = 0; i < eles.length; i++) {
+                        originAnimations.push(eles[i].style.animation);
+                    }
+                    for (i = 0; i < eles.length; i++) {
+                        // remove animation
+                        eles[i].style.animation = 'none';
+                    }
+                    for (i = 0; i < eles.length; i++) {
+                        // trigger reflow
+                        eles[i].offsetWidth;
+                    }
+                    for (i = 0; i < eles.length; i++) {
+                        // add animation again
+                        eles[i].style.animation = originAnimations[i];
+                    }
+                    swiperAnimate(this);
                 }
-                for (i = 0; i < eles.length; i++) {
-                    // remove animation
-                    eles[i].style.animation = 'none';
-                }
-                for (i = 0; i < eles.length; i++) {
-                    // trigger reflow
-                    eles[i].offsetWidth;
-                }
-                for (i = 0; i < eles.length; i++) {
-                    // add animation again
-                    eles[i].style.animation = originAnimations[i];
-                }
-                swiperAnimate(swiper);
             },
-            onTransitionEnd: function (swiper) {
-                swiperAnimate(swiper);
+            onTransitionEnd: function () {
+                swiperAnimate(this);
             },
         })
     </script>
