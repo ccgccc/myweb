@@ -91,6 +91,9 @@
             </section>
         </div>
         <div class="swiper-pagination"></div>
+        <div id="bgm" class="" style="background-image: url(../images/music.svg);" onclick="playStop()">
+            <audio src="../music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
+        </div>
         <img class="corner restart" src="../images/corner.png" />
         <img class="bamboo restart" src="../images/bamboo.png" />
         <img class="moutain restart" src="../images/moutain.png" />
@@ -112,6 +115,8 @@
                 init: function () {
                     swiperAnimateCache(this);
                     swiperAnimate(this);
+                    // var bgmAudio = document.getElementById("bgmAudio");
+                    // bgmAudio.play();
                 },
                 slideChange: function () {
                     var eles = document.querySelectorAll(".restart");
@@ -138,6 +143,33 @@
                 swiperAnimate(this);
             },
         })
+        var isStartedOnce = false;
+        var bgmAudio = document.getElementById("bgmAudio");
+        var bgmButton = document.getElementById("bgm");
+        function handleFistInteraction() {
+            if (!isStartedOnce & bgmAudio.paused) {
+                var promise = bgmAudio.play();
+                promise.then(_ => {
+                    bgmButton.className = "playing"
+                    isStartedOnce = true;
+                })
+            }
+        }
+        // document.body.addEventListener("mousemove", handleFistInteraction(), true)
+        document.body.addEventListener('mousemove', handleFistInteraction());
+        document.body.addEventListener('scroll', handleFistInteraction());
+        document.body.addEventListener('keydown', handleFistInteraction());
+        document.body.addEventListener('click', handleFistInteraction());
+        document.body.addEventListener('touchstart', handleFistInteraction());
+        function playStop() {
+            if (bgmAudio.paused) {
+                bgmButton.className = "playing"
+                bgmAudio.play();
+            } else {
+                bgmButton.className = ""
+                bgmAudio.pause();
+            }
+        }
     </script>
 </body>
 

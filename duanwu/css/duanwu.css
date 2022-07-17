@@ -76,6 +76,46 @@
     white-space: nowrap;
 }
 
+#bgm {
+    position: absolute;
+    width: 10%;
+    aspect-ratio: 1;
+    top: 3%;
+    right: 5%;
+    z-index: 10;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(0, 0, 0, .3);
+    pointer-events: auto;
+    background: 0 0 no-repeat;
+    background-size: contain
+}
+
+#bgm.playing {
+    -webkit-animation: musicRoutate 1.5s linear infinite;
+    animation: musicRoutate 1.5s linear infinite
+}
+
+@-webkit-keyframes musicRoutate {
+    0% {
+        transform: rotate(0)
+    }
+
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+@keyframes musicRoutate {
+    0% {
+        transform: rotate(0)
+    }
+
+    to {
+        transform: rotate(1turn)
+    }
+}
+
 @keyframes updown {
     from {
         transform: translateY(-100%);
