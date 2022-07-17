@@ -115,9 +115,8 @@
                 init: function () {
                     swiperAnimateCache(this);
                     swiperAnimate(this);
-                    // var bgmAudio = document.getElementById("bgmAudio");
-                    // bgmAudio.play();
                 },
+                // 切换slide后刷新css动画和slide动画
                 slideChange: function () {
                     var eles = document.querySelectorAll(".restart");
                     var originAnimations = [];
@@ -137,15 +136,21 @@
                         eles[i].style.animation = originAnimations[i];
                     }
                     swiperAnimate(this);
+                },
+                touchStart: function (swiper, event) {
+                    // console.log('事件触发了');
+                    handleFistInteraction();
                 }
-            },
-            onTransitionEnd: function () {
-                swiperAnimate(this);
-            },
+            }
         })
-        var isStartedOnce = false;
         var bgmAudio = document.getElementById("bgmAudio");
         var bgmButton = document.getElementById("bgm");
+        // 浏览器兼容，保证刷新时是否播放与播放按钮状态保持一致
+        window.onload = () => {
+            bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
+        }
+        // 第一次用户交互时开始播放音乐(谷歌浏览器不允许没有用户交互直接播放音频)
+        var isStartedOnce = false;
         function handleFistInteraction() {
             if (!isStartedOnce & bgmAudio.paused) {
                 var promise = bgmAudio.play();
@@ -155,12 +160,13 @@
                 })
             }
         }
-        // document.body.addEventListener("mousemove", handleFistInteraction(), true)
-        document.body.addEventListener('mousemove', handleFistInteraction());
-        document.body.addEventListener('scroll', handleFistInteraction());
-        document.body.addEventListener('keydown', handleFistInteraction());
-        document.body.addEventListener('click', handleFistInteraction());
-        document.body.addEventListener('touchstart', handleFistInteraction());
+        // not working, supposedly due to being taken over by swiper
+        // document.addEventListener('mousemove', handleFistInteraction());
+        // document.addEventListener('scroll', handleFistInteraction());
+        // document.addEventListener('keydown', handleFistInteraction());
+        // document.addEventListener('click', handleFistInteraction());
+        // document.addEventListener('touchstart', handleFistInteraction());
+        // 播放按钮函数
         function playStop() {
             if (bgmAudio.paused) {
                 bgmButton.className = "playing"
