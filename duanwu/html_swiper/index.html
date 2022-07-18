@@ -99,21 +99,6 @@
         var bgmButton = document.getElementById("bgm");
         // 初始化
         window.onload = () => {
-            // 加载时添加slides背景元素
-            var slides = document.querySelectorAll('.swiper-slide');
-            for (i = 0; i < slides.length; i++) {
-                var div = document.createElement('div');
-                div.setAttribute('class', 'backgroundAnimation');
-                div.innerHTML = `
-                    <img class="corner restart" src="../images/corner.png" />
-                    <img class="bamboo restart" src="../images/bamboo.png" />
-                    <img class="moutain restart" src="../images/moutain.png" />
-                    <img class="zongzi restart" src="../images/zongzi.png" />
-                    <img class="wine restart" src="../images/wine.png" />
-                    <img class="cloud restart" src="../images/cloud.png" />
-                `;
-                slides[i].appendChild(div);
-            }
             // 保证刷新后是否播放与播放按钮状态保持一致(浏览器兼容)
             bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
         }
@@ -128,6 +113,21 @@
             },
             on: {
                 init: function (swiper) {
+                    // 加载时添加slides背景元素
+                    var slides = document.querySelectorAll('.swiper-slide');
+                    for (i = 0; i < slides.length; i++) {
+                        var div = document.createElement('div');
+                        div.setAttribute('class', 'backgroundAnimation');
+                        div.innerHTML = `
+                            <img class="corner restart" src="../images/corner.png" />
+                            <img class="bamboo restart" src="../images/bamboo.png" />
+                            <img class="moutain restart" src="../images/moutain.png" />
+                            <img class="zongzi restart" src="../images/zongzi.png" />
+                            <img class="wine restart" src="../images/wine.png" />
+                            <img class="cloud restart" src="../images/cloud.png" />
+                        `;
+                        slides[i].appendChild(div);
+                    }
                     // swiper初始化时将非活跃页面设为透明，将活跃页面设置显示
                     for (i = 0; i < swiper.slides.length; i++) {
                         var es = swiper.slides[i];
@@ -138,13 +138,6 @@
                 },
                 // 切换slide后刷新css动画和slide动画
                 slideChange: function (swiper) {
-                    // 切换slide后将非活跃页面设为透明并清除转换缩放效果，将活跃页面设置显示
-                    for (i = 0; i < swiper.slides.length; i++) {
-                        es = swiper.slides[i].style;
-                        i == this.activeIndex ? es.opacity = 1 : es.opacity = 0;
-                        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
-                            = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
-                    }
                     // 页面切换后重新开始背景动画
                     var eles = document.querySelectorAll(".restart");
                     var originAnimations = [];
@@ -154,7 +147,15 @@
                     }
                     for (i = 0; i < eles.length; i++) {
                         // 移除原有动画
+                        eles[i].style.opacity = 0;
                         eles[i].style.animation = 'none';
+                    }
+                    // 切换slide后将非活跃页面设为透明并清除转换缩放效果，将活跃页面设置显示
+                    for (i = 0; i < swiper.slides.length; i++) {
+                        es = swiper.slides[i].style;
+                        i == this.activeIndex ? es.opacity = 1 : es.opacity = 0;
+                        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+                            = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
                     for (i = 0; i < eles.length; i++) {
                         // 触发reflow
@@ -163,6 +164,7 @@
                     for (i = 0; i < eles.length; i++) {
                         // 重新添加动画
                         eles[i].style.animation = originAnimations[i];
+                        eles[i].style.opacity = 1;
                     }
                     // swiper动画
                     swiperAnimate(this);
