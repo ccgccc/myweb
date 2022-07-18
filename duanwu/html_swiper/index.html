@@ -157,7 +157,6 @@
                     for (i = 0; i < eles.length; i++) {
                         // 重新添加动画
                         eles[i].style.animation = originAnimations[i];
-                        // eles[i].style.opacity = 1;
                     }
                     // swiper动画
                     swiperAnimate(this);
@@ -168,6 +167,7 @@
                         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
+                    // 为了防止背景动画图片一闪而过的情况，先让动画透明，设置0.2s后再显示动画
                     setTimeout(() => {
                         for (i = 0; i < eles.length; i++) {
                             eles[i].style.opacity = 1;
