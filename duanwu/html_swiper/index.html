@@ -168,9 +168,11 @@
                         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
-                    for (i = 0; i < eles.length; i++) {
-                        eles[i].style.opacity = 1;
-                    }
+                    setTimeout(() => {
+                        for (i = 0; i < eles.length; i++) {
+                            eles[i].style.opacity = 1;
+                        }
+                    }, 200)
                 },
                 touchStart: function (swiper, event) {
                     // 第一次用户交互时开始播放音乐
