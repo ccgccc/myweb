@@ -147,15 +147,8 @@
                     }
                     for (i = 0; i < eles.length; i++) {
                         // 移除原有动画
-                        eles[i].style.opacity = 0;
+                        // eles[i].style.opacity = 0;
                         eles[i].style.animation = 'none';
-                    }
-                    // 切换slide后将非活跃页面设为透明并清除转换缩放效果，将活跃页面设置显示
-                    for (i = 0; i < swiper.slides.length; i++) {
-                        es = swiper.slides[i].style;
-                        i == this.activeIndex ? es.opacity = 1 : es.opacity = 0;
-                        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
-                            = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
                     for (i = 0; i < eles.length; i++) {
                         // 触发reflow
@@ -164,10 +157,17 @@
                     for (i = 0; i < eles.length; i++) {
                         // 重新添加动画
                         eles[i].style.animation = originAnimations[i];
-                        eles[i].style.opacity = 1;
+                        // eles[i].style.opacity = 0;
                     }
                     // swiper动画
                     swiperAnimate(this);
+                    // 切换slide后将非活跃页面设为透明并清除转换缩放效果，将活跃页面设置显示
+                    for (i = 0; i < swiper.slides.length; i++) {
+                        es = swiper.slides[i].style;
+                        i == this.activeIndex ? es.opacity = 1 : es.opacity = 0;
+                        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+                            = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
+                    }
                 },
                 touchStart: function (swiper, event) {
                     // 第一次用户交互时开始播放音乐
