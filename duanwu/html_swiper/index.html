@@ -16,9 +16,6 @@
         }
 
         body {
-            background-image: url("../images/background.jpg");
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
             /* background: #eee; */
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             font-size: 14px;
@@ -28,13 +25,24 @@
         }
 
         .swiper {
+            /* swiper这里再设置一次背景图是为了方便切换时控制透明度，
+                主要还是由于swiper-slide中包含了背景和背景动画，
+                如果将swiper-slide控制透明那么背景也会透明，
+                所以这里再设置一次背景 */
+            background-image: url("../images/background.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
             width: 100%;
             height: 100%;
         }
 
         .swiper-slide {
+            background-image: url("../images/background.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
             text-align: center;
             font-size: 18px;
+            overflow: hidden;
 
             /* Center slide text vertically */
             display: -webkit-box;
@@ -50,13 +58,6 @@
             -webkit-align-items: center;
             align-items: center;
         }
-
-        /* .swiper-slide img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        } */
 
         .ani {
             position: absolute;
@@ -79,9 +80,6 @@
                     swiper-animate-duration="2s" swiper-animate-delay="0s" />
             </section>
             <section class="swiper-slide">
-                <!-- <img class="ani duanwujie" src="../images/libao.jpg" swiper-animate-effect="zoomInDown"
-                    swiper-animate-duration="1.5s" swiper-animate-delay="0s" /> -->
-                <!-- <div class="fontstyle restart" style="animation: scaleup 1.5s;">--- 在这里祝大家端午安康！</div> -->
                 <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
                     swiper-animate-delay="0s">--- 在这里祝大家端午安康！</div>
             </section>
@@ -94,15 +92,32 @@
         <div id="bgm" class="" style="background-image: url(../images/music.svg);" onclick="playStop()">
             <audio src="../music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
         </div>
-        <img class="corner restart" src="../images/corner.png" />
-        <img class="bamboo restart" src="../images/bamboo.png" />
-        <img class="moutain restart" src="../images/moutain.png" />
-        <img class="zongzi restart" src="../images/zongzi.png" />
-        <img class="wine restart" src="../images/wine.png" />
-        <img class="cloud restart" src="../images/cloud.png" />
         <img src="../images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
     </div>
     <script>
+        var bgmAudio = document.getElementById("bgmAudio");
+        var bgmButton = document.getElementById("bgm");
+        // 初始化
+        window.onload = () => {
+            // 加载时添加slides背景元素
+            var slides = document.querySelectorAll('.swiper-slide');
+            for (i = 0; i < slides.length; i++) {
+                var div = document.createElement('div');
+                div.setAttribute('class', 'backgroundAnimation');
+                div.innerHTML = `
+                    <img class="corner restart" src="../images/corner.png" />
+                    <img class="bamboo restart" src="../images/bamboo.png" />
+                    <img class="moutain restart" src="../images/moutain.png" />
+                    <img class="zongzi restart" src="../images/zongzi.png" />
+                    <img class="wine restart" src="../images/wine.png" />
+                    <img class="cloud restart" src="../images/cloud.png" />
+                `;
+                slides[i].appendChild(div);
+            }
+            // 保证刷新后是否播放与播放按钮状态保持一致(浏览器兼容)
+            bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
+        }
+        // 初始化Swiper
         var mySwiper = new Swiper('.swiper', {
             direction: "vertical",
             mousewheelControl: true,
@@ -112,43 +127,77 @@
                 clickable: true
             },
             on: {
-                init: function () {
+                init: function (swiper) {
+                    // swiper初始化时将非活跃页面设为透明，将活跃页面设置显示
+                    for (i = 0; i < swiper.slides.length; i++) {
+                        var es = swiper.slides[i];
+                        i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = 0;
+                    }
                     swiperAnimateCache(this);
                     swiperAnimate(this);
                 },
                 // 切换slide后刷新css动画和slide动画
-                slideChange: function () {
+                slideChange: function (swiper) {
+                    // 切换slide后将非活跃页面设为透明并清除转换缩放效果，将活跃页面设置显示
+                    for (i = 0; i < swiper.slides.length; i++) {
+                        es = swiper.slides[i].style;
+                        i == this.activeIndex ? es.opacity = 1 : es.opacity = 0;
+                        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+                            = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
+                    }
+                    // 页面切换后重新开始背景动画
                     var eles = document.querySelectorAll(".restart");
                     var originAnimations = [];
                     for (i = 0; i < eles.length; i++) {
+                        // 存放原有动画效果
                         originAnimations.push(eles[i].style.animation);
                     }
                     for (i = 0; i < eles.length; i++) {
-                        // remove animation
+                        // 移除原有动画
                         eles[i].style.animation = 'none';
                     }
                     for (i = 0; i < eles.length; i++) {
-                        // trigger reflow
+                        // 触发reflow
                         eles[i].offsetWidth;
                     }
                     for (i = 0; i < eles.length; i++) {
-                        // add animation again
+                        // 重新添加动画
                         eles[i].style.animation = originAnimations[i];
                     }
+                    // swiper动画
                     swiperAnimate(this);
                 },
                 touchStart: function (swiper, event) {
-                    // console.log('事件触发了');
+                    // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
+                },
+                watchSlidesProgress: true,
+                progress: function (swiper, progress) {
+                    slidesNum = swiper.slides.length;
+                    var slide = swiper.slides[this.activeIndex];
+                    // 切换的时候设置透明度
+                    var activeProgress = progress * (slidesNum - 1) - this.activeIndex; //将progress转换到0-1区间
+                    var opacity = Math.max(1 - Math.abs(activeProgress), 0.85);
+                    // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", opacity: " + opacity);
+                    slide.style.opacity = opacity;
+                    // 设置转换的缩放效果
+                    var translate = activeProgress * swiper.height / 4;
+                    scale = 1 - Math.min(Math.abs(activeProgress * 0.5), 1);
+                    // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", translate: " + translate + ", scale: " + scale);
+                    es = slide.style;
+                    es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+                        = 'translate3d(0,' + translate + 'px,-' + translate + 'px) scaleY(' + scale + ')';
+
+                },
+                setTransition: function (swiper, speed) {
+                    for (var i = 0; i < swiper.slides.length; i++) {
+                        es = swiper.slides[i].style;
+                        es.webkitTransitionDuration = es.MsTransitionDuration = es.msTransitionDuration
+                            = es.MozTransitionDuration = es.OTransitionDuration = es.transitionDuration = speed + 'ms';
+                    }
                 }
             }
         })
-        var bgmAudio = document.getElementById("bgmAudio");
-        var bgmButton = document.getElementById("bgm");
-        // 浏览器兼容，保证刷新时是否播放与播放按钮状态保持一致
-        window.onload = () => {
-            bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
-        }
         // 第一次用户交互时开始播放音乐(谷歌浏览器不允许没有用户交互直接播放音频)
         var isStartedOnce = false;
         function handleFistInteraction() {
@@ -160,12 +209,6 @@
                 })
             }
         }
-        // not working, supposedly due to being taken over by swiper
-        // document.addEventListener('mousemove', handleFistInteraction());
-        // document.addEventListener('scroll', handleFistInteraction());
-        // document.addEventListener('keydown', handleFistInteraction());
-        // document.addEventListener('click', handleFistInteraction());
-        // document.addEventListener('touchstart', handleFistInteraction());
         // 播放按钮函数
         function playStop() {
             if (bgmAudio.paused) {
