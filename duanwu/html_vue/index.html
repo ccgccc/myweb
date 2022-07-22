@@ -114,7 +114,7 @@
                 init: function (swiper) {
                     // 加载时添加slides背景元素
                     var slides = document.querySelectorAll('.swiper-slide');
-                    for (i = 0; i < slides.length; i++) {
+                    for (var i = 0; i < slides.length; i++) {
                         var div = document.createElement('div');
                         div.setAttribute('class', 'backgroundAnimation');
                         div.innerHTML = `
@@ -134,7 +134,7 @@
                         slides[i].appendChild(div);
                     }
                     // swiper初始化时将非活跃页面设为透明，将活跃页面设置显示
-                    for (i = 0; i < swiper.slides.length; i++) {
+                    for (var i = 0; i < swiper.slides.length; i++) {
                         var es = swiper.slides[i];
                         i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = minOpacity;
                     }
@@ -147,28 +147,35 @@
 
                 // 切换slide后刷新slide动画
                 slideChange: function (swiper) {
-                    // console.log("slideChange");
+                    console.log("slideChange --- activeIndex: " + this.activeIndex);
                     // 每个slide切换结束时也运行当前slide动画
                     // swiperAnimate(this);
                     // slideAnimate(swiper, this.activeIndex);
                     // 切换slide后给非活跃页面设置透明度并清除转换缩放效果，将活跃页面设置显示
-                    for (i = 0; i < swiper.slides.length; i++) {
+                    for (var i = 0; i < swiper.slides.length; i++) {
                         es = swiper.slides[i].style;
-                        i == this.activeIndex ? es.opacity = 1 : es.opacity = minOpacity;
+                        if (i == this.activeIndex) {
+                            es.opacity = 1;
+                        } else {
+                            clearSlideAnimate(swiper, i);
+                            es.opacity = minOpacity;
+                        }
+                        console.log("slideChange --- index: " + i);
+                        // i == this.activeIndex ? es.opacity = 1 : es.opacity = minOpacity;
                         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
                 },
 
                 touchStart: function (swiper, event) {
-                    // console.log("--- touchStart");
+                    console.log("--- touchStart");
                     // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
                 },
 
                 // 触摸移动时启动
                 touchMove: function (swiper, event) {
-                    // console.log("touchMove");
+                    console.log("touchMove");
                     if (!isAniStarted) {
                         // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
                         if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
@@ -183,7 +190,7 @@
                 },
 
                 touchEnd: function (swiper, event) {
-                    // console.log("touchEnd");
+                    console.log("touchEnd");
                     isAniStarted = false;
                 },
 
