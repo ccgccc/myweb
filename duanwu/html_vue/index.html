@@ -180,8 +180,11 @@
                     }
 
                     // 设置转换的缩放效果
+                    // 缩放比0.5
+                    var scale = 1 - Math.min(Math.abs(activeProgress) * 0.5, 1);
+                    // 由于以中线缩放，所以滑动需要补偿一定位移来使上下页面连接
+                    // 补偿距离为 activeProgress * height * 缩放比 / 2 (除以2是因为上下都会缩放)
                     var translate = activeProgress * swiper.height / 4;
-                    scale = 1 - Math.min(Math.abs(activeProgress) * 0.5, 1);
                     // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", translate: " + translate + ", scale: " + scale);
                     es = slide.style;
                     es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
