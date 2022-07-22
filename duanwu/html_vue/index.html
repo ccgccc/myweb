@@ -136,10 +136,10 @@
                         slides[i].appendChild(div);
                     }
                     // swiper初始化时将非活跃页面设为透明，将活跃页面设置显示
-                    for (var i = 0; i < swiper.slides.length; i++) {
-                        var es = swiper.slides[i];
-                        i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = minOpacity;
-                    }
+                    // for (var i = 0; i < swiper.slides.length; i++) {
+                    //     var es = swiper.slides[i];
+                    //     i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = minOpacity;
+                    // }
                     // swiper动画
                     // 隐藏动画元素 
                     swiperAnimateCache(this);
@@ -157,16 +157,16 @@
                     for (var i = 0; i < swiper.slides.length; i++) {
                         // console.log("slideChange --- index: " + i);
                         es = swiper.slides[i].style;
-                        if (i == this.activeIndex) {
-                            // var anis = swiper.slides[i].querySelectorAll(".ani");
-                            // for (var i = 0; i < allBoxes.length; i++) {
-                            //     anis[i].style.visibility = "visible";
-                            // }
-                            es.opacity = 1;
-                        } else {
-                            // clearSlideAnimate(swiper, i);
-                            es.opacity = minOpacity;
-                        }
+                        // if (i == this.activeIndex) {
+                        //     // var anis = swiper.slides[i].querySelectorAll(".ani");
+                        //     // for (var i = 0; i < allBoxes.length; i++) {
+                        //     //     anis[i].style.visibility = "visible";
+                        //     // }
+                        //     es.opacity = 1;
+                        // } else {
+                        //     // clearSlideAnimate(swiper, i);
+                        //     es.opacity = minOpacity;
+                        // }
                         // i == this.activeIndex ? es.opacity = 1 : es.opacity = minOpacity;
                         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
@@ -225,20 +225,20 @@
                     var slide = swiper.slides[this.activeIndex];
                     // 切换的时候设置透明度
                     var activeProgress = progress * (slidesNum - 1) - this.activeIndex; //将progress转换到-1~1区间
-                    var opacity = Math.max(1 - Math.abs(activeProgress) * 0.5, minOpacity); // 0.5决定透明度减少的速度，最小透明度minOpacity
-                    // console.log("activeIndex: " + this.activeIndex + ", progress: " + progress + ", activeProgress: " + activeProgress + ", opacity: " + opacity);
-                    slide.style.opacity = opacity;
-                    if (progress > this.activeIndex / (slidesNum - 1) && this.activeIndex < slidesNum - 1) {
-                        // 向下滑动
-                        nextSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
-                        swiper.slides[this.activeIndex + 1].style.opacity = nextSlideOpacity;
-                        // console.log("activeIndex+1: " + (this.activeIndex + 1) + ", nextSlideOpacity: " + nextSlideOpacity);
-                    } else if (progress < this.activeIndex / (slidesNum - 1) && this.activeIndex > 0) {
-                        // 向上滑动
-                        preSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
-                        swiper.slides[this.activeIndex - 1].style.opacity = preSlideOpacity;
-                        // console.log("activeIndex-1: " + (this.activeIndex - 1) + ", preSlideOpacity: " + preSlideOpacity);
-                    }
+                    // var opacity = Math.max(1 - Math.abs(activeProgress) * 0.5, minOpacity); // 0.5决定透明度减少的速度，最小透明度minOpacity
+                    // // console.log("activeIndex: " + this.activeIndex + ", progress: " + progress + ", activeProgress: " + activeProgress + ", opacity: " + opacity);
+                    // slide.style.opacity = opacity;
+                    // if (progress > this.activeIndex / (slidesNum - 1) && this.activeIndex < slidesNum - 1) {
+                    //     // 向下滑动
+                    //     nextSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
+                    //     swiper.slides[this.activeIndex + 1].style.opacity = nextSlideOpacity;
+                    //     // console.log("activeIndex+1: " + (this.activeIndex + 1) + ", nextSlideOpacity: " + nextSlideOpacity);
+                    // } else if (progress < this.activeIndex / (slidesNum - 1) && this.activeIndex > 0) {
+                    //     // 向上滑动
+                    //     preSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
+                    //     swiper.slides[this.activeIndex - 1].style.opacity = preSlideOpacity;
+                    //     // console.log("activeIndex-1: " + (this.activeIndex - 1) + ", preSlideOpacity: " + preSlideOpacity);
+                    // }
 
                     // // 设置转换的缩放效果
                     // // 缩放比0.5
