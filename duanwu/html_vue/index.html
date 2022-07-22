@@ -87,11 +87,13 @@
         </div>
         <img src="../images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
     </div>
+
     <script>
         // 全局变量
         var bgmAudio = document.getElementById("bgmAudio");
         var bgmButton = document.getElementById("bgm");
         var minOpacity = 0.5; // 最小透明度
+        var lastSlideIndex = 0; // 上一个操作的slide索引
 
         // 初始化
         window.onload = () => {
@@ -147,20 +149,24 @@
 
                 // 切换slide后刷新slide动画
                 slideChange: function (swiper) {
-                    console.log("slideChange --- activeIndex: " + this.activeIndex);
+                    // console.log("slideChange --- activeIndex: " + this.activeIndex);
                     // 每个slide切换结束时也运行当前slide动画
                     // swiperAnimate(this);
                     // slideAnimate(swiper, this.activeIndex);
                     // 切换slide后给非活跃页面设置透明度并清除转换缩放效果，将活跃页面设置显示
                     for (var i = 0; i < swiper.slides.length; i++) {
+                        // console.log("slideChange --- index: " + i);
                         es = swiper.slides[i].style;
                         if (i == this.activeIndex) {
+                            // var anis = swiper.slides[i].querySelectorAll(".ani");
+                            // for (var i = 0; i < allBoxes.length; i++) {
+                            //     anis[i].style.visibility = "visible";
+                            // }
                             es.opacity = 1;
                         } else {
-                            clearSlideAnimate(swiper, i);
+                            // clearSlideAnimate(swiper, i);
                             es.opacity = minOpacity;
                         }
-                        console.log("slideChange --- index: " + i);
                         // i == this.activeIndex ? es.opacity = 1 : es.opacity = minOpacity;
                         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
@@ -168,29 +174,48 @@
                 },
 
                 touchStart: function (swiper, event) {
-                    console.log("--- touchStart");
+                    // console.log("--- touchStart");
                     // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
                 },
 
                 // 触摸移动时启动
                 touchMove: function (swiper, event) {
-                    console.log("touchMove");
+                    // console.log("touchMove");
                     if (!isAniStarted) {
                         // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
                         if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
                             // console.log("slideAnimate --- this.activeIndex + 1: " + (this.activeIndex + 1));
                             slideAnimate(swiper, this.activeIndex + 1);
+                            lastSlideIndex = this.activeIndex;
                             isAniStarted = true;
                         } else if (swiper.swipeDirection == 'prev' && this.activeIndex > 0) {
+                            // console.log("slideAnimate --- this.activeIndex - 1: " + (this.activeIndex - 1));
                             slideAnimate(swiper, this.activeIndex - 1);
+                            lastSlideIndex = this.activeIndex;
                             isAniStarted = true;
                         }
                     }
                 },
 
-                touchEnd: function (swiper, event) {
-                    console.log("touchEnd");
+                // touchEnd不太满足动画要求，将清除动画挪到transitionStart中
+                // touchEnd: function (swiper, event) {
+                //     console.log("touchEnd --- swipeDirection: " + swiper.swipeDirection + ", activeIndex: " + this.activeIndex + ", lastSlideIndex: " + lastSlideIndex);
+                // },
+
+                transitionStart: function (swiper) {
+                    // console.log("transitionStart --- swipeDirection: " + swiper.swipeDirection + ", activeIndex: " + this.activeIndex + ", lastSlideIndex: " + lastSlideIndex);
+                    if (this.activeIndex == lastSlideIndex) {
+                        if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
+                            // console.log("clearSlideAnimate --- this.activeIndex + 1: " + (this.activeIndex + 1));
+                            clearSlideAnimate(swiper, this.activeIndex + 1);
+                        } else if (swiper.swipeDirection == 'prev' && this.activeIndex > 0) {
+                            // console.log("clearSlideAnimate --- this.activeIndex - 1: " + (this.activeIndex - 1));
+                            clearSlideAnimate(swiper, this.activeIndex - 1);
+                        }
+                    } else {
+                        clearSlideAnimate(swiper, lastSlideIndex);
+                    }
                     isAniStarted = false;
                 },
 

@@ -3,8 +3,9 @@
 // 版本1.03
 function swiperAnimateCache(swiper) {
     // 初始化时调用将所有动画放入缓存中
-    for (j = 0; j < swiper.slides.length; j++) {
-        for (allBoxes = swiper.slides[j].querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) {
+    for (var j = 0; j < swiper.slides.length; j++) {
+        var allBoxes = swiper.slides[j].querySelectorAll(".ani");
+        for (var i = 0; i < allBoxes.length; i++) {
             allBoxes[i].attributes["style"] ?
                 allBoxes[i].setAttribute("swiper-animate-style-cache", allBoxes[i].attributes["style"].value) :
                 allBoxes[i].setAttribute("swiper-animate-style-cache", " "), allBoxes[i].style.visibility = "hidden"
@@ -22,7 +23,7 @@ function slideAnimate(swiper, slideIndex) {
     clearSlideAnimate(swiper, slideIndex);
     // 查询当前活跃页面的动画
     var anis = swiper.slides[slideIndex].querySelectorAll(".ani");
-    for (i = 0; i < anis.length; i++) {
+    for (var i = 0; i < anis.length; i++) {
         // 设置visible
         anis[i].style.visibility = "visible";
         // 设置effect到className
@@ -42,13 +43,14 @@ function slideAnimate(swiper, slideIndex) {
 }
 
 function clearSwiperAnimate(swiper) {
-    for (j = 0; j < swiper.slides.length; j++) {
+    for (var j = 0; j < swiper.slides.length; j++) {
         clearSlideAnimate(swiper, j)
     }
 }
 
 function clearSlideAnimate(swiper, slideIndex) {
-    for (allBoxes = swiper.slides[slideIndex].querySelectorAll(".ani"), i = 0; i < allBoxes.length; i++) {
+    var allBoxes = swiper.slides[slideIndex].querySelectorAll(".ani");
+    for (var i = 0; i < allBoxes.length; i++) {
         // 若有缓存则将缓存style设置到style上
         allBoxes[i].attributes["swiper-animate-style-cache"] &&
             allBoxes[i].setAttribute("style", allBoxes[i].attributes["swiper-animate-style-cache"].value);
