@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/swiper-bundle.min.css">
     <link rel="stylesheet" href="../css/animate.min.css">
     <script src="../js/swiper-bundle.min.js"></script>
-    <script src="../js/swiper.animate1.0.3.min.js"></script>
+    <script src="../js/myswiper.animate.js"></script>
     <style>
         html,
         body {
@@ -98,7 +98,9 @@
             // 保证刷新后是否播放与播放按钮状态保持一致(浏览器兼容)
             bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
         }
-        // 初始化Swiper
+
+        // Swiper
+        var isAniStarted = false;
         var mySwiper = new Swiper('.swiper', {
             direction: "vertical",
             mousewheelControl: true,
@@ -108,6 +110,7 @@
                 clickable: true
             },
             on: {
+                // 初始化Swiper
                 init: function (swiper) {
                     // 加载时添加slides背景元素
                     var slides = document.querySelectorAll('.swiper-slide');
@@ -136,14 +139,18 @@
                         i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = minOpacity;
                     }
                     // swiper动画
+                    // 隐藏动画元素 
                     swiperAnimateCache(this);
+                    // 初始化完成开始动画
                     swiperAnimate(this);
                 },
 
                 // 切换slide后刷新slide动画
                 slideChange: function (swiper) {
-                    // swiper动画
-                    swiperAnimate(this);
+                    // console.log("slideChange");
+                    // 每个slide切换结束时也运行当前slide动画
+                    // swiperAnimate(this);
+                    // slideAnimate(swiper, this.activeIndex);
                     // 切换slide后给非活跃页面设置透明度并清除转换缩放效果，将活跃页面设置显示
                     for (i = 0; i < swiper.slides.length; i++) {
                         es = swiper.slides[i].style;
@@ -154,8 +161,30 @@
                 },
 
                 touchStart: function (swiper, event) {
+                    // console.log("--- touchStart");
                     // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
+                },
+
+                // 触摸移动时启动
+                touchMove: function (swiper, event) {
+                    // console.log("touchMove");
+                    if (!isAniStarted) {
+                        // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
+                        if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
+                            // console.log("slideAnimate --- this.activeIndex + 1: " + (this.activeIndex + 1));
+                            slideAnimate(swiper, this.activeIndex + 1);
+                            isAniStarted = true;
+                        } else if (swiper.swipeDirection == 'prev' && this.activeIndex > 0) {
+                            slideAnimate(swiper, this.activeIndex - 1);
+                            isAniStarted = true;
+                        }
+                    }
+                },
+
+                touchEnd: function (swiper, event) {
+                    // console.log("touchEnd");
+                    isAniStarted = false;
                 },
 
                 watchSlidesProgress: true,
@@ -179,17 +208,23 @@
                         // console.log("activeIndex-1: " + (this.activeIndex - 1) + ", preSlideOpacity: " + preSlideOpacity);
                     }
 
+                    // // 设置转换的缩放效果
+                    // // 缩放比0.5
+                    // var scale = 1 - Math.min(Math.abs(activeProgress) * 0.5, 1);
+                    // // 由于以中线缩放，所以滑动需要补偿一定位移来使上下页面连接
+                    // // 补偿距离为 activeProgress * height * 缩放比 / 2 (除以2是因为上下都会缩放)
+                    // var translate = activeProgress * swiper.height / 4;
+                    // // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", translate: " + translate + ", scale: " + scale);
+                    // es = slide.style;
+                    // es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+                    //     = 'translate3d(0,' + translate + 'px,-' + translate + 'px) scaleY(' + scale + ')';
+
                     // 设置转换的缩放效果
-                    // 缩放比0.5
-                    var scale = 1 - Math.min(Math.abs(activeProgress) * 0.5, 1);
-                    // 由于以中线缩放，所以滑动需要补偿一定位移来使上下页面连接
-                    // 补偿距离为 activeProgress * height * 缩放比 / 2 (除以2是因为上下都会缩放)
-                    var translate = activeProgress * swiper.height / 4;
+                    var translate = activeProgress * swiper.height;
                     // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", translate: " + translate + ", scale: " + scale);
                     es = slide.style;
                     es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
-                        = 'translate3d(0,' + translate + 'px,-' + translate + 'px) scaleY(' + scale + ')';
-
+                        = 'translate3d(0,' + translate + 'px,-' + translate + 'px)';
                 },
 
                 setTransition: function (swiper, speed) {
