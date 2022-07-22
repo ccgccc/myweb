@@ -37,9 +37,9 @@
         }
 
         .swiper-slide {
-            background-image: url("../images/background.jpg");
+            /* background-image: url("../images/background.jpg");
             background-repeat: no-repeat;
-            background-size: 100% 100%;
+            background-size: 100% 100%; */
             text-align: center;
             font-size: 18px;
             overflow: hidden;
@@ -78,18 +78,6 @@
             <section class="swiper-slide">
                 <img class="ani duanwujie" src="../images/duanwujie.png" swiper-animate-effect="zoomIn"
                     swiper-animate-duration="2s" swiper-animate-delay="0s" />
-                <!-- <img class="ani corner" src="../images/corner.png" swiper-animate-effect="slideInDown"
-                    swiper-animate-duration="2s" swiper-animate-delay="0s" />
-                <img class="ani bamboo" src="../images/bamboo.png" swiper-animate-effect="slideInDown"
-                    swiper-animate-duration="2s" swiper-animate-delay="0s" />
-                <img class="ani moutain" src="../images/moutain.png" swiper-animate-effect="slideInUp"
-                    swiper-animate-duration="2s" swiper-animate-delay="0s" />
-                <img class="ani zongzi" src="../images/zongzi.png" swiper-animate-effect="fadeInUp"
-                    swiper-animate-duration="2s" swiper-animate-delay="0.5s" />
-                <img class="ani wine" src="../images/wine.png" swiper-animate-effect="fadeInUp"
-                    swiper-animate-duration="2s" swiper-animate-delay="0s" />
-                <img class="ani cloud" src="../images/cloud.png" swiper-animate-effect="fadeIn"
-                    swiper-animate-duration="2s" swiper-animate-delay="0s" /> -->
             </section>
             <section class="swiper-slide">
                 <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
@@ -151,9 +139,11 @@
                         var es = swiper.slides[i];
                         i == this.activeIndex ? es.style.opacity = 1 : es.style.opacity = 0;
                     }
+                    // swiper动画
                     swiperAnimateCache(this);
                     swiperAnimate(this);
                 },
+
                 // 切换slide后刷新slide动画
                 slideChange: function (swiper) {
                     // swiper动画
@@ -166,10 +156,12 @@
                             = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
                     }
                 },
+
                 touchStart: function (swiper, event) {
                     // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
                 },
+
                 watchSlidesProgress: true,
                 progress: function (swiper, progress) {
                     slidesNum = swiper.slides.length;
@@ -188,6 +180,7 @@
                         = 'translate3d(0,' + translate + 'px,-' + translate + 'px) scaleY(' + scale + ')';
 
                 },
+
                 setTransition: function (swiper, speed) {
                     for (var i = 0; i < swiper.slides.length; i++) {
                         es = swiper.slides[i].style;
@@ -197,6 +190,7 @@
                 }
             }
         })
+
         // 第一次用户交互时开始播放音乐(谷歌浏览器不允许没有用户交互直接播放音频)
         var isStartedOnce = false;
         function handleFistInteraction() {
@@ -208,6 +202,7 @@
                 })
             }
         }
+
         // 播放按钮函数
         function playStop() {
             if (bgmAudio.paused) {
