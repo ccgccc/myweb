@@ -97,11 +97,13 @@
     <script>
         var bgmAudio = document.getElementById("bgmAudio");
         var bgmButton = document.getElementById("bgm");
+
         // 初始化
         window.onload = () => {
             // 保证刷新后是否播放与播放按钮状态保持一致(浏览器兼容)
             bgmAudio.paused ? bgmButton.className = "" : bgmButton.className = "playing";
         }
+
         // 初始化Swiper
         var mySwiper = new Swiper('.swiper', {
             direction: "vertical",
@@ -136,6 +138,7 @@
                     swiperAnimateCache(this);
                     swiperAnimate(this);
                 },
+
                 // 切换slide后刷新css动画和slide动画
                 slideChange: function (swiper) {
                     // 页面切换后重新开始背景动画
@@ -174,28 +177,47 @@
                         }
                     }, 200)
                 },
+
                 touchStart: function (swiper, event) {
                     // 第一次用户交互时开始播放音乐
                     handleFistInteraction();
                 },
+
                 watchSlidesProgress: true,
                 progress: function (swiper, progress) {
                     slidesNum = swiper.slides.length;
                     var slide = swiper.slides[this.activeIndex];
+                    var minOpacity = 0.5; // 最小透明度
                     // 切换的时候设置透明度
-                    var activeProgress = progress * (slidesNum - 1) - this.activeIndex; //将progress转换到0-1区间
-                    var opacity = Math.max(1 - Math.abs(activeProgress), 0.85);
-                    // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", opacity: " + opacity);
+                    var activeProgress = progress * (slidesNum - 1) - this.activeIndex; //将progress转换到-1~1区间
+                    var opacity = Math.max(1 - Math.abs(activeProgress) * 0.5, minOpacity); // 0.5决定透明度减少的速度，最小透明度minOpacity
+                    // console.log("activeIndex: " + this.activeIndex + ", progress: " + progress + ", activeProgress: " + activeProgress + ", opacity: " + opacity);
                     slide.style.opacity = opacity;
+                    // 设置上下页面的透明度
+                    // if (progress > this.activeIndex / (slidesNum - 1) && this.activeIndex < slidesNum - 1) {
+                    //     // 向下滑动
+                    //     nextSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
+                    //     swiper.slides[this.activeIndex + 1].style.opacity = nextSlideOpacity;
+                    //     // console.log("activeIndex+1: " + (this.activeIndex + 1) + ", nextSlideOpacity: " + nextSlideOpacity);
+                    // } else if (progress < this.activeIndex / (slidesNum - 1) && this.activeIndex > 0) {
+                    //     // 向上滑动
+                    //     preSlideOpacity = Math.max(1 - (1 - Math.abs(activeProgress)) * 0.5, minOpacity);
+                    //     swiper.slides[this.activeIndex - 1].style.opacity = preSlideOpacity;
+                    //     // console.log("activeIndex-1: " + (this.activeIndex - 1) + ", preSlideOpacity: " + preSlideOpacity);
+                    // }
+
                     // 设置转换的缩放效果
+                    // 缩放比0.5
+                    var scale = 1 - Math.min(Math.abs(activeProgress) * 0.5, 1);
+                    // 由于以中线缩放，所以滑动需要补偿一定位移来使上下页面连接
+                    // 补偿距离为 activeProgress * height * 缩放比 / 2 (除以2是因为上下都会缩放)
                     var translate = activeProgress * swiper.height / 4;
-                    scale = 1 - Math.min(Math.abs(activeProgress * 0.5), 1);
                     // console.log("activeIndex: " + this.activeIndex, ", progress: " + progress + ", translate: " + translate + ", scale: " + scale);
                     es = slide.style;
                     es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
                         = 'translate3d(0,' + translate + 'px,-' + translate + 'px) scaleY(' + scale + ')';
-
                 },
+
                 setTransition: function (swiper, speed) {
                     for (var i = 0; i < swiper.slides.length; i++) {
                         es = swiper.slides[i].style;
