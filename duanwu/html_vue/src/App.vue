@@ -5,7 +5,7 @@
       @touchStart="onTouchStart" @touchMove="onTouchMove" @transitionStart="onTransitionStart" @progress="onProgress"
       class="mySwiper">
       <swiper-slide>
-        <img class="ani duanwujie" src="@/assets/images/duanwujie.png" swiper-animate-effect="zoomIn"
+        <img class="ani duanwujie" src="./assets/images/duanwujie.png" swiper-animate-effect="zoomIn"
           swiper-animate-duration="2s" swiper-animate-delay="0s" />
         <slide-background></slide-background>
       </swiper-slide>
