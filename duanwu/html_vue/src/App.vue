@@ -1,56 +1,55 @@
 <template>
-  <swiper :direction="'vertical'" :mousewheelControl="true" :pagination="{ type: 'bullets', clickable: true }"
-    :watchSlidesProgress="true" :modules="modules" @swiper="onSwiper" @slideChange="onSlideChange"
-    @touchStart="onTouchStart" @transitionStart="onTransitionStart" @progress="onProgress" class="mySwiper">
-    <swiper-slide>
-      <img class="ani duanwujie" src="./assets/images/duanwujie.png" />
-      <!-- <img :src="require('@/assets/images/duanwujie.png')" /> -->
-      <img class="ani corner" src="./assets/images/corner.png" swiper-animate-effect="slideInDown"
-        swiper-animate-duration="2s" swiper-animate-delay="0s" />
-      <img class="ani bamboo" src="./assets/images/bamboo.png" swiper-animate-effect="slideInDown"
-        swiper-animate-duration="2s" swiper-animate-delay="0s" />
-      <img class="ani moutain" src="./assets/images/moutain.png" swiper-animate-effect="slideInUp"
-        swiper-animate-duration="2s" swiper-animate-delay="0s" />
-      <img class="ani zongzi" src="./assets/images/zongzi.png" swiper-animate-effect="fadeInUp"
-        swiper-animate-duration="2s" swiper-animate-delay="0.5s" />
-      <img class="ani wine" src="./assets/images/wine.png" swiper-animate-effect="fadeInUp" swiper-animate-duration="2s"
-        swiper-animate-delay="0s" />
-      <img class="ani cloud" src="./assets/images/cloud.png" swiper-animate-effect="fadeIn" swiper-animate-duration="2s"
-        swiper-animate-delay="0s" />
-    </swiper-slide>
-    <swiper-slide>
-      <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s" swiper-animate-delay="0s">
-        --- 在这里祝大家端午安康！</div>
-    </swiper-slide>
-    <swiper-slide>
-      <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s" swiper-animate-delay="0s">
-        下个假期可是中秋了噢，再会！</div>
-    </swiper-slide>
-    <div id="bgm" class="" style="background-image: url('./assets/images/music.svg');" onclick="playStop()">
-      <audio src="./assets/music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
+  <div id="myapp">
+    <swiper :direction="'vertical'" :mousewheelControl="true" :pagination="{ type: 'bullets', clickable: true }"
+      :watchSlidesProgress="true" :modules="modules" @swiper="onSwiper" @slideChange="onSlideChange"
+      @touchStart="onTouchStart" @touchMove="onTouchMove" @transitionStart="onTransitionStart" @progress="onProgress"
+      class="mySwiper">
+      <swiper-slide>
+        <img class="ani duanwujie" src="@/assets/images/duanwujie.png" swiper-animate-effect="zoomIn"
+          swiper-animate-duration="2s" swiper-animate-delay="0s" />
+        <slide-background></slide-background>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
+          swiper-animate-delay="0s">
+          --- 在这里祝大家端午安康！</div>
+        <slide-background></slide-background>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s"
+          swiper-animate-delay="0s">
+          下个假期可是中秋了噢，再会！</div>
+        <slide-background></slide-background>
+      </swiper-slide>
+    </swiper>
+    <div id="bgm">
+      <audio src="/assets/music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
     </div>
     <img src="./assets/images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
-  </swiper>
+  </div>
 </template>
 
 <script>
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
+import SlideBackground from "./components/SlideBackground.vue";
+import swiperAnimatation from './assets/js/myswiper.animate.js';
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "./assets/css/duanwu.css";
 import "./assets/css/animate.min.css";
-// import "./style.css";
 
 // import required modules
 import { Pagination } from "swiper";
 
 export default {
+  el: "#myapp",
   components: {
     Swiper,
     SwiperSlide,
+    SlideBackground
   },
   setup() {
     var lastSlideIndex = 0; // 上一个操作的slide索引
@@ -58,10 +57,15 @@ export default {
 
     const onSwiper = (swiper) => {
       // console.log(swiper);
+      // swiper动画
+      // 隐藏动画元素 
+      swiperAnimatation.swiperAnimateCache(swiper);
+      // 初始化完成开始动画
+      swiperAnimatation.swiperAnimate(swiper);
     };
 
     const onSlideChange = (swiper) => {
-      console.log('slide change');
+      // console.log('slide change');
       // for (var i = 0; i < swiper.slides.length; i++) {
       //   // console.log("slideChange --- index: " + i);
       //   var es = swiper.slides[i].style;
@@ -71,32 +75,49 @@ export default {
     };
 
     const onTouchStart = (swiper) => {
-      // console.log("touchMove");
+      console.log("~~~~~ touchStart");
+    }
+
+    const onTouchMove = (swiper) => {
+      console.log("touchMove");
+      var slidesNum = swiper.slides.length;
       if (!isAniStarted) {
         // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
-        if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
-          // console.log("slideAnimate --- this.activeIndex + 1: " + (this.activeIndex + 1));
-          // slideAnimate(swiper, this.activeIndex + 1);
-          lastSlideIndex = this.activeIndex;
+        if (swiper.swipeDirection == 'next' && swiper.activeIndex < slidesNum - 1) {
+          // console.log("slideAnimate --- swiper.activeIndex + 1: " + (swiper.activeIndex + 1));
+          swiperAnimatation.slideAnimate(swiper, swiper.activeIndex + 1);
+          lastSlideIndex = swiper.activeIndex;
           isAniStarted = true;
-        } else if (swiper.swipeDirection == 'prev' && this.activeIndex > 0) {
-          // console.log("slideAnimate --- this.activeIndex - 1: " + (this.activeIndex - 1));
-          // slideAnimate(swiper, this.activeIndex - 1);
-          lastSlideIndex = this.activeIndex;
+        } else if (swiper.swipeDirection == 'prev' && swiper.activeIndex > 0) {
+          // console.log("slideAnimate --- swiper.activeIndex - 1: " + (swiper.activeIndex - 1));
+          swiperAnimatation.slideAnimate(swiper, swiper.activeIndex - 1);
+          lastSlideIndex = swiper.activeIndex;
           isAniStarted = true;
         }
       }
     };
 
     const onTransitionStart = (swiper) => {
-      console.log("onTransitionStart");
       for (var i = 0; i < swiper.slides.length; i++) {
-        // console.log("slideChange --- index: " + i);
         var es = swiper.slides[i].style;
         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
           = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
       }
+      console.log("onTransitionStart --- swipeDirection: " + swiper.swipeDirection + ", activeIndex: " + swiper.activeIndex + ", lastSlideIndex: " + lastSlideIndex);
+      var slidesNum = swiper.slides.length;
+      if (swiper.activeIndex == lastSlideIndex) {
+        if (swiper.swipeDirection == 'next' && swiper.activeIndex < slidesNum - 1) {
+          console.log("clearSlideAnimate --- swiper.activeIndex + 1: " + (swiper.activeIndex + 1));
+          swiperAnimatation.clearSlideAnimate(swiper, swiper.activeIndex + 1);
+        } else if (swiper.swipeDirection == 'prev' && swiper.activeIndex > 0) {
+          console.log("clearSlideAnimate --- swiper.activeIndex - 1: " + (swiper.activeIndex - 1));
+          swiperAnimatation.clearSlideAnimate(swiper, swiper.activeIndex - 1);
+        }
+      } else {
+        swiperAnimatation.clearSlideAnimate(swiper, lastSlideIndex);
+      }
       lastSlideIndex = swiper.activeIndex;
+      isAniStarted = false;
     };
 
     const onProgress = (swiper, progress) => {
@@ -110,10 +131,12 @@ export default {
       es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
         = 'translate3d(0,' + translate + 'px,-' + translate + 'px)';
     };
+
     return {
       onSwiper,
       onSlideChange,
       onTouchStart,
+      onTouchMove,
       onTransitionStart,
       onProgress,
       modules: [Pagination],
@@ -168,6 +191,10 @@ body {
 
 .ani {
   position: absolute;
+}
+
+#bgm {
+  background-image: url('./assets/images/music.svg');
 }
 
 #array {
