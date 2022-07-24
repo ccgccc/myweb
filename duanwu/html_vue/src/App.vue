@@ -22,34 +22,55 @@
         <slide-background></slide-background>
       </swiper-slide>
     </swiper>
-    <div id="bgm">
-      <audio src="/assets/music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
+    <div id="bgm" v-on:click="playStop">
+      <!-- <audio :src="bgmSrcAudio" id="bgmAudio" loop="loop"></audio> -->
     </div>
     <img src="./assets/images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
   </div>
 </template>
 
 <script>
-// Import Swiper Vue.js components
+// import swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
+// import required modules
+import { Pagination } from "swiper";
+
+// import my components & functions
 import SlideBackground from "./components/SlideBackground.vue";
 import swiperAnimatation from './assets/js/myswiper.animate.js';
 
-// Import Swiper styles
+// import swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "./assets/css/duanwu.css";
 import "./assets/css/animate.min.css";
 
-// import required modules
-import { Pagination } from "swiper";
+// import audio
+import bgmSrcAudio from "./assets/music/duanwu.mp3";
+var bgmAudio = new Audio(bgmSrcAudio);
+// not working
+// var bgmAudio = new Audio("./assets/music/duanwu.mp3");
+
+var isStartedOnce = false;
 
 export default {
-  el: "#myapp",
   components: {
     Swiper,
     SwiperSlide,
     SlideBackground
+  },
+  methods: {
+    playStop() {
+      var bgmButton = document.getElementById("bgm");
+      // console.log('click', bgmAudio);
+      if (bgmAudio.paused) {
+        bgmButton.className = "playing"
+        bgmAudio.play();
+      } else {
+        bgmButton.className = ""
+        bgmAudio.pause();
+      }
+    }
   },
   setup() {
     var lastSlideIndex = 0; // 上一个操作的slide索引
@@ -64,6 +85,8 @@ export default {
       swiperAnimatation.swiperAnimate(swiper);
     };
 
+    // 因为vue中的swiper在页面滑动到一半时即触发slidechange，
+    // 不方便实现需要效果，所以将逻辑移到onTransitionStart
     const onSlideChange = (swiper) => {
       // console.log('slide change');
       // for (var i = 0; i < swiper.slides.length; i++) {
@@ -75,11 +98,20 @@ export default {
     };
 
     const onTouchStart = (swiper) => {
-      console.log("~~~~~ touchStart");
+      // console.log("~~~~~ touchStart");
+      var bgmButton = document.getElementById("bgm");
+      if (!isStartedOnce & bgmAudio.paused) {
+        // console.log("firstinteraction play");
+        var promise = bgmAudio.play();
+        promise.then(_ => {
+          bgmButton.className = "playing"
+          isStartedOnce = true;
+        })
+      }
     }
 
     const onTouchMove = (swiper) => {
-      console.log("touchMove");
+      // console.log("touchMove");
       var slidesNum = swiper.slides.length;
       if (!isAniStarted) {
         // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
@@ -103,14 +135,14 @@ export default {
         es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
           = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
       }
-      console.log("onTransitionStart --- swipeDirection: " + swiper.swipeDirection + ", activeIndex: " + swiper.activeIndex + ", lastSlideIndex: " + lastSlideIndex);
+      // console.log("onTransitionStart --- swipeDirection: " + swiper.swipeDirection + ", activeIndex: " + swiper.activeIndex + ", lastSlideIndex: " + lastSlideIndex);
       var slidesNum = swiper.slides.length;
       if (swiper.activeIndex == lastSlideIndex) {
         if (swiper.swipeDirection == 'next' && swiper.activeIndex < slidesNum - 1) {
-          console.log("clearSlideAnimate --- swiper.activeIndex + 1: " + (swiper.activeIndex + 1));
+          // console.log("clearSlideAnimate --- swiper.activeIndex + 1: " + (swiper.activeIndex + 1));
           swiperAnimatation.clearSlideAnimate(swiper, swiper.activeIndex + 1);
         } else if (swiper.swipeDirection == 'prev' && swiper.activeIndex > 0) {
-          console.log("clearSlideAnimate --- swiper.activeIndex - 1: " + (swiper.activeIndex - 1));
+          // console.log("clearSlideAnimate --- swiper.activeIndex - 1: " + (swiper.activeIndex - 1));
           swiperAnimatation.clearSlideAnimate(swiper, swiper.activeIndex - 1);
         }
       } else {
