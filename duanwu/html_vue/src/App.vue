@@ -1,5 +1,7 @@
 <template>
-  <swiper :direction="'vertical'" :pagination="{ clickable: true, }" :modules="modules" class="mySwiper">
+  <swiper :direction="'vertical'" :mousewheelControl="true" :pagination="{ type: 'bullets', clickable: true }"
+    :watchSlidesProgress="true" :modules="modules" @swiper="onSwiper" @slideChange="onSlideChange"
+    @touchStart="onTouchStart" @transitionStart="onTransitionStart" @progress="onProgress" class="mySwiper">
     <swiper-slide>
       <img class="ani duanwujie" src="./assets/images/duanwujie.png" />
       <!-- <img :src="require('@/assets/images/duanwujie.png')" /> -->
@@ -24,6 +26,10 @@
       <div class="ani fontstyle" swiper-animate-effect="zoomIn" swiper-animate-duration="2s" swiper-animate-delay="0s">
         下个假期可是中秋了噢，再会！</div>
     </swiper-slide>
+    <div id="bgm" class="" style="background-image: url('./assets/images/music.svg');" onclick="playStop()">
+      <audio src="./assets/music/duanwu.mp3" id="bgmAudio" loop="loop"></audio>
+    </div>
+    <img src="./assets/images/arrow.png" style="width:8%; left:46%;bottom:2%;" id="array">
   </swiper>
 </template>
 
@@ -47,7 +53,69 @@ export default {
     SwiperSlide,
   },
   setup() {
+    var lastSlideIndex = 0; // 上一个操作的slide索引
+    var isAniStarted = false;
+
+    const onSwiper = (swiper) => {
+      // console.log(swiper);
+    };
+
+    const onSlideChange = (swiper) => {
+      console.log('slide change');
+      // for (var i = 0; i < swiper.slides.length; i++) {
+      //   // console.log("slideChange --- index: " + i);
+      //   var es = swiper.slides[i].style;
+      //   es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+      //     = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
+      // }
+    };
+
+    const onTouchStart = (swiper) => {
+      // console.log("touchMove");
+      if (!isAniStarted) {
+        // console.log("touchMove --- swipeDirection: " + swiper.swipeDirection);
+        if (swiper.swipeDirection == 'next' && this.activeIndex < slidesNum - 1) {
+          // console.log("slideAnimate --- this.activeIndex + 1: " + (this.activeIndex + 1));
+          // slideAnimate(swiper, this.activeIndex + 1);
+          lastSlideIndex = this.activeIndex;
+          isAniStarted = true;
+        } else if (swiper.swipeDirection == 'prev' && this.activeIndex > 0) {
+          // console.log("slideAnimate --- this.activeIndex - 1: " + (this.activeIndex - 1));
+          // slideAnimate(swiper, this.activeIndex - 1);
+          lastSlideIndex = this.activeIndex;
+          isAniStarted = true;
+        }
+      }
+    };
+
+    const onTransitionStart = (swiper) => {
+      console.log("onTransitionStart");
+      for (var i = 0; i < swiper.slides.length; i++) {
+        // console.log("slideChange --- index: " + i);
+        var es = swiper.slides[i].style;
+        es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+          = ''; // = 'translate3d(0, 0, 0) scaleY(1)';
+      }
+      lastSlideIndex = swiper.activeIndex;
+    };
+
+    const onProgress = (swiper, progress) => {
+      var slidesNum = swiper.slides.length;
+      var slide = swiper.slides[lastSlideIndex];
+      var activeProgress = progress * (slidesNum - 1) - lastSlideIndex; //将progress转换到-1~1区间
+      // 设置转换移动效果，保持向下翻页时当页位置不变
+      var translate = activeProgress * swiper.height;
+      // console.log("activeIndex: " + swiper.activeIndex, ", progress: " + progress + ", translate: " + translate);
+      var es = slide.style;
+      es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform
+        = 'translate3d(0,' + translate + 'px,-' + translate + 'px)';
+    };
     return {
+      onSwiper,
+      onSlideChange,
+      onTouchStart,
+      onTransitionStart,
+      onProgress,
       modules: [Pagination],
     };
   },
