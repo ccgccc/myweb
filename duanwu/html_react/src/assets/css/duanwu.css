@@ -1,6 +1,8 @@
 /* important!!! */
 /* 这里必须设置height，否则swiper计算出的高度会很离谱！ */
-#app { height: 100% }
+#app {
+    height: 100%
+}
 
 html,
 body {
@@ -79,9 +81,8 @@ body {
     right: 0;
     margin: auto;
     text-align: center;
-    /* TODO */
-    /* font-size: 20px; */
-    font-size: 3em;
+    /* react 和 vue 字体大小不同？ */
+    font-size: 1.2em;
     font-family: STKaiti, KaiTi, KaiTi_GB2312, DFKai-SB, SimSun, '宋体', Tahoma, Helvetica, Arial, sans-serif;
     /* font-family: Baskerville, Georgia, "Liberation Serif", "Kaiti SC", STKaiti,
         "AR PL UKai CN", "AR PL UKai HK", "AR PL UKai TW", "AR PL UKai TW MBE",
@@ -145,7 +146,7 @@ body {
 }
 
 #bgm {
-    background-image: url('./assets/images/music.svg');
+    background-image: url('@/assets/images/music.svg');
 }
 
 #array {
